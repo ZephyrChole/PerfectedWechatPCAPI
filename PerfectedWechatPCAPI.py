@@ -43,7 +43,9 @@ class PerfectedWechatPCAPI(WechatPCAPI):
         while not super().get_myself():
             sleep(5)
         print("登陆成功")
+        self.collect_info()
 
+    def collect_info(self):
         self.get_friends_and_chatrooms()
         self.get_chatroom_members()
 
