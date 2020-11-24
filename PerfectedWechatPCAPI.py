@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-#
 
-# Author:Zephyrchole
+# Author:Jiawei Feng
 # @software: PyCharm
 # @file: PerfectedWechatPCAPI.py
 # @time: 2020/11/3 17:08 
@@ -34,7 +34,7 @@ class Chatroom:
 
 
 class PerfectedWechatPCAPI(WechatPCAPI):
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     message_queue = Queue()
     friends = []
     chatrooms = []
@@ -48,60 +48,60 @@ class PerfectedWechatPCAPI(WechatPCAPI):
         self.update_info()
 
     def update_info(self):
+        def collect_info(self):
+            def get_friends_and_chatrooms():
+                super().update_frinds()
+
+            def get_chatroom_members(self):
+                for chatroom in self.chatrooms:
+                    super().get_member_of_chatroom(chatroom.wxid)
+
+            get_friends_and_chatrooms()
+            sleep(1)
+            get_chatroom_members(self)
+
         self.friends = []
         self.chatrooms = []
-        self.collect_info()
-
-    def collect_info(self):
-        self.get_friends_and_chatrooms()
-        sleep(1)
-        self.get_chatroom_members()
-
-    def get_friends_and_chatrooms(self):
-        super().update_frinds()
-
-    def get_chatroom_members(self):
-        for chatroom in self.chatrooms:
-            super().get_member_of_chatroom(chatroom.wxid)
+        collect_info(self)
 
     def on_message(self, message):
+        def info_manager(self, message):
+            def info_chatroom_member(self, message):
+                data = message.get("data")
+                chatroom_wxid = data.get("chatroom_id")
+                member_wxid = data.get("wx_id")
+                member_name = data.get("wx_nickname").encode("gbk", "replace").decode("gbk", "replace")
+                member_wechat_number = data.get("wx_id_search")
+                new_member = Member(member_wxid, member_wechat_number, member_name)
+                for chatroom in self.chatrooms:
+                    if chatroom.wxid == chatroom_wxid:
+                        chatroom.members.append(new_member)
+                        break
+
+            def info_friend(self, message):
+                data = message.get("data")
+                friend_nickname = data.get("wx_nickname").encode("gbk", "replace").decode("gbk", "replace")
+                friend_wxid = data.get("wx_id")
+                friend_wechat_number = data.get("wx_id_search")
+                new_friend = Friend(friend_wxid, friend_wechat_number, friend_nickname, '')
+                self.friends.append(new_friend)
+
+            def info_chatroom(self, message):
+                data = message.get("data")
+                chatroom_name = data.get("chatroom_name").encode("gbk", "replace").decode("gbk", "replace")
+                chatroom_wxid = data.get("chatroom_id")
+                new_chatroom = Chatroom(chatroom_wxid, chatroom_name)
+                self.chatrooms.append(new_chatroom)
+
+            msg_type = message.get("type")
+            msgType_fun = {"member::chatroom": info_chatroom_member, "friend::person": info_friend,
+                           "friend::chatroom": info_chatroom}
+            msgType_fun.get(msg_type, self.message_queue.put)(self, message)
+
         logging.debug(message)
-        self.info_manager(message)
+        info_manager(self, message)
 
-    def info_manager(self, message):
-        msg_type = message.get("type")
-        msgType_fun = {"member::chatroom": self.info_chatroom_member, "friend::person": self.info_friend,
-                       "friend::chatroom": self.info_chatroom}
-        msgType_fun.get(msg_type, self.message_queue.put)(message)
-
-    def info_chatroom_member(self, message):
-        data = message.get("data")
-        chatroom_wxid = data.get("chatroom_id")
-        member_wxid = data.get("wx_id")
-        member_name = data.get("wx_nickname").encode("gbk", "replace").decode("gbk", "replace")
-        member_wechat_number = data.get("wx_id_search")
-        new_member = Member(member_wxid, member_wechat_number,member_name)
-        for chatroom in self.chatrooms:
-            if chatroom.wxid == chatroom_wxid:
-                chatroom.members.append(new_member)
-                break
-
-    def info_friend(self, message):
-        data = message.get("data")
-        friend_nickname = data.get("wx_nickname").encode("gbk", "replace").decode("gbk", "replace")
-        friend_wxid = data.get("wx_id")
-        friend_wechat_number = data.get("wx_id_search")
-        new_friend = Friend(friend_wxid, friend_wechat_number, friend_nickname, '')
-        self.friends.append(new_friend)
-
-    def info_chatroom(self, message):
-        data = message.get("data")
-        chatroom_name = data.get("chatroom_name").encode("gbk", "replace").decode("gbk", "replace")
-        chatroom_wxid = data.get("chatroom_id")
-        new_chatroom = Chatroom(chatroom_wxid, chatroom_name)
-        self.chatrooms.append(new_chatroom)
-
-
+    
 def main():
     wx_inst = PerfectedWechatPCAPI()
     while True:
