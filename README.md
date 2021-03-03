@@ -1,2 +1,4 @@
-# PerfectedWechatPCAPI
-Based of https://github.com/jwpl190/WechatPCAPI.With a more user-friendly interface.
+# This repo is abandoned.
+
+as Wechat 2.7 is no longer supported.
+
